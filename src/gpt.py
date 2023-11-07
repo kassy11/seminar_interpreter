@@ -10,8 +10,9 @@ load_env()
 # https://platform.openai.com/docs/models
 # gpt-4-32k is not available from OpenAI API
 # https://help.openai.com/en/articles/7102672-how-can-i-access-gpt-4
-MODEL_NAME = {"GPT3": "gpt-3.5-turbo-16k", "GPT4": "gpt-4-32k"}
-MODEL_MAX_TOKENS = {"GPT3": 16000, "GPT4": 32000}
+# TODO: どのモデルを使うか？
+MODEL_NAME = {"GPT3": "gpt-3.5-turbo", "GPT4": "gpt-4"}
+MODEL_MAX_TOKENS = {"GPT3": 4000, "GPT4": 8000}
 RESPONSE_MAX_TOKENS = 1000
 MODEL = os.environ.get("MODEL")
 REQUEST_TIMEOUT = 600
@@ -37,7 +38,7 @@ def generate(prompt):
         request_timeout=REQUEST_TIMEOUT,
     )
 
-    CHARACTER_PROMPT = "あなたはAIに関する研究を行っている専門家です。"
+    CHARACTER_PROMPT = "あなたはプロの編集者です。"
     messages = [
         SystemMessage(content=CHARACTER_PROMPT),
         HumanMessage(content=prompt),
@@ -60,5 +61,5 @@ def generate(prompt):
             response = "ChatGPTへのリクエストが失敗しました。\nタイムアウトになっているか、OpenAI APIのRateLimitに引っかかっている可能性があります。少し待ってから論文URLを再送してみてください。"
     else:
         logger.warning("The token size is too large, so the tail is cut off.")
-        response = "論文の文章量が大きすぎたため、要約できませんでした。"
+        response = "音声テキストの文章量が大きすぎたため、要約できませんでした。"
     return response
