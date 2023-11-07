@@ -22,6 +22,7 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 def create_prompt(format_prompt, paper_text):
     logger.info("Creating prompt...")
     # if user does'nt send format prompt of send blank files
+    # TODO: デフォルトのプロンプトを変える
     if not format_prompt:
         with open("./format.txt") as f:
             format_prompt = f.read()
@@ -38,6 +39,7 @@ def generate(prompt):
         request_timeout=REQUEST_TIMEOUT,
     )
 
+    # TODO: キャラクターのプロンプトを変える
     CHARACTER_PROMPT = "あなたはプロの編集者です。"
     messages = [
         SystemMessage(content=CHARACTER_PROMPT),

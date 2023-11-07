@@ -31,6 +31,7 @@ def respond_to_mention(event, say):
     if "files" in event and len(event["files"]) > 0:
         for file in event["files"]:
             mimetype = file["mimetype"]
+            logger.info(f"User send file. mimetype={mimetype}.")
             if mimetype == "text/plain" or mimetype == "text/markdown":
                 logger.info("User send format prompt from file.")
                 format_prompt = read_format_prompt(
@@ -43,7 +44,7 @@ def respond_to_mention(event, say):
                 exist_audio = True
 
     if not exist_audio:
-        logger.warn("User does'nt send audio files.")
+        logger.warning("User does'nt send any audio files.")
         say(
             text=add_mention(user_id, "音声ファイルを指定してください。"),
             thread_ts=thread_id,
@@ -70,23 +71,24 @@ def respond_to_mention(event, say):
 
         if is_success:
             audio_text = read(tmp_file_name)
+            print(audio_text)
             prompt = create_prompt(format_prompt, audio_text)
             say(
                 text=add_mention(
-                    user_id, "要約を生成中です。\n1~5分ほどかかります。\n"
+                    user_id, "議事録を生成中です。\n1~5分ほどかかります。\n"
                 ),
                 thread_ts=thread_id,
                 channel=channel_id,
             )
             answer = generate(prompt)
-            response += add_mention(user_id, f"{audio} の要約です。\n{answer}\n\n")
+            response += add_mention(user_id, f"{audio} の議事録です。\n{answer}\n\n")
             logger.info(f"Successfully generate summary from {audio}.")
         else:
             response += add_mention(
                 user_id,
                 f"{audio} から音声テキストを取得できませんでした。",
             )
-    say(text=response, thread_ts=thread_id, channel=channel_id)
+    say(text=response, channel=channel_id)
 
 
 if __name__ == "__main__":

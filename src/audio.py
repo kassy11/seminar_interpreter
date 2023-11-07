@@ -2,6 +2,7 @@ import urllib.request
 from logzero import logger
 from .utils import load_env
 import openai
+import os
 
 load_env()
 
@@ -28,5 +29,11 @@ def read(tmp_file_name):
     # TODO: whisperでテキストを読み取り
     # TODO: 音声ファイルが重いとき
     audio_file = open(tmp_file_name, "rb")
-    transcript = openai.Audio.transcribe("whisper-1", audio_file)
+    # File uploads are currently limited to 25 MB and
+    # following input file types are supported: mp3, mp4, mpeg, mpga, m4a, wav, and webm.
+    # https://platform.openai.com/docs/guides/speech-to-text
+    transcript = openai.Audio.transcribe(
+        model="whisper-1", file=audio_file, response_format="text"
+    )
+    os.remove(tmp_file_name)
     return transcript

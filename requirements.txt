@@ -5,3 +5,4 @@ python-dotenv
 pdfminer.six
 tiktoken
 logzero
+openai==0.28.1
